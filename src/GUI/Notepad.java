@@ -3,6 +3,8 @@ package GUI;
 import Control.FileControl;
 import java.awt.Component;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
@@ -329,8 +331,13 @@ public class Notepad extends javax.swing.JFrame {
             String path = fileChooser.getSelectedFile().getAbsolutePath();
             String fileName = fileChooser.getSelectedFile().getName();
             currentPath = path;
-            String data = control.readFile(path);
-            txtArea.setText(data);
+            String data;
+            try {
+                data = control.readFile(path);
+                txtArea.setText(data);
+            } catch (IOException ex) {
+                Logger.getLogger(Notepad.class.getName()).log(Level.SEVERE, null, ex);
+            }
             this.setTitle(fileName);
             resetUndoManager();
         } else {
@@ -345,7 +352,11 @@ public class Notepad extends javax.swing.JFrame {
         } else {
             String data = txtArea.getText();
             String fileName = fileChooser.getSelectedFile().getName();
-            control.saveFile(data, currentPath);
+            try {
+                control.saveFile(data, currentPath);
+            } catch (IOException ex) {
+                Logger.getLogger(Notepad.class.getName()).log(Level.SEVERE, null, ex);
+            }
             this.setTitle(fileName);
             resetUndoManager();
         }
